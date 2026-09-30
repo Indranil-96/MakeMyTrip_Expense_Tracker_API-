@@ -3,7 +3,7 @@ import express from 'express';
 // dotenv.config();
 
 const port = Number(process.env.PORT) || 3000;
-const expenseClientEmailKey = 'expense-client-email-id';
+const expenseClientEmailKey = 'expense-client-email';
 const app = express();
 
 app.use(express.json({ limit: '1mb' }));
@@ -66,15 +66,15 @@ app.post('/trackmmt/expenses', (request, response) => {
         return response.status(400).json({ success: false, message: 'Request body must be a JSON object' });
     }
 
-    const clientEmail = input[expenseClientEmailKey] ?? input['expense-client-emaiid'];
-    const { 'external-org-id': organizationId, 'from-date': fromDate, 'to-date': toDate } = input;
+    const clientEmail = input[expenseClientEmailKey];
+    const { 'from-date': fromDate, 'to-date': toDate } = input;
     const { 'report-type': reportType, level } = input;
 
-    if (!clientEmail || !organizationId || !reportType || !level
+    if (!clientEmail || !reportType || !level
         || !Number.isFinite(fromDate) || !Number.isFinite(toDate)) {
         return response.status(400).json({
             success: false,
-            message: 'Required fields: expense-client-email-id, external-org-id, from-date, to-date, report-type, level',
+            message: 'Required fields: expense-client-email, from-date, to-date, report-type, level',
         });
     }
 
@@ -87,7 +87,6 @@ app.post('/trackmmt/expenses', (request, response) => {
 
     const normalizedRequest = {
         [expenseClientEmailKey]: clientEmail,
-        'external-org-id': organizationId,
         'from-date': fromDate,
         'to-date': toDate,
         'report-type': reportType,
